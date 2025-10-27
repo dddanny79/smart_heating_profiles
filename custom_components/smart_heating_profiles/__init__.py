@@ -13,17 +13,28 @@ from homeassistant.helpers import config_validation as cv
 
 from .const import (
     DOMAIN,
+    CONF_TARGET_ENTITY,
     SERVICE_SET_PROFILE,
     SERVICE_CREATE_PROFILE,
     SERVICE_UPDATE_PROFILE,
     SERVICE_DELETE_PROFILE,
+    SERVICE_SET_SCHEDULE,
+    SERVICE_ENABLE_SCHEDULE,
+    SERVICE_DISABLE_SCHEDULE,
     ATTR_PROFILE,
+    ATTR_SCHEDULE_NAME,
+    ATTR_SCHEDULE_DAYS,
+    ATTR_SCHEDULE_ENABLED,
+    ATTR_TIME_BLOCKS,
+    ATTR_CONDITIONS,
 )
 from .profile_manager import HeatingProfileManager
+from .schedule_manager import ScheduleManager
+from .scheduler import HeatingScheduler
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[Platform] = [Platform.CLIMATE]
+PLATFORMS: list[Platform] = [Platform.CLIMATE, Platform.SWITCH, Platform.SENSOR]
 
 # Service schemas
 SERVICE_SET_PROFILE_SCHEMA = vol.Schema(
@@ -58,6 +69,20 @@ SERVICE_DELETE_PROFILE_SCHEMA = vol.Schema(
     }
 )
 
+SERVICE_ENABLE_SCHEDULE_SCHEMA = vol.Schema(
+    {
+        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+        vol.Required(ATTR_SCHEDULE_NAME): cv.string,
+    }
+)
+
+SERVICE_DISABLE_SCHEDULE_SCHEMA = vol.Schema(
+    {
+        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+        vol.Required(ATTR_SCHEDULE_NAME): cv.string,
+    }
+)
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Smart Heating Profiles from a config entry."""
@@ -69,8 +94,32 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     profile_manager = HeatingProfileManager(hass, entry.entry_id)
     await profile_manager.async_load()
 
+    # Create and load schedule manager
+    schedule_manager = ScheduleManager(hass, entry.entry_id)
+    await schedule_manager.async_load()
+
+    # Callback for scheduler to set temperature
+    async def set_scheduled_temperature(temperature: float) -> None:
+        """Set temperature from scheduler."""
+        target_entity = entry.data[CONF_TARGET_ENTITY]
+        await hass.services.async_call(
+            "climate",
+            "set_temperature",
+            {
+                "entity_id": target_entity,
+                "temperature": temperature,
+            },
+            blocking=True,
+        )
+
+    # Create and start scheduler
+    scheduler = HeatingScheduler(hass, schedule_manager, set_scheduled_temperature)
+    await scheduler.async_start()
+
     hass.data[DOMAIN][entry.entry_id] = {
         "profile_manager": profile_manager,
+        "schedule_manager": schedule_manager,
+        "scheduler": scheduler,
     }
 
     # Register services
@@ -121,6 +170,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if manager:
                 await manager.async_delete_profile(profile_name)
 
+    async def handle_enable_schedule(call: ServiceCall) -> None:
+        """Handle enable schedule service."""
+        schedule_name = call.data[ATTR_SCHEDULE_NAME]
+
+        for entry_id, data in hass.data[DOMAIN].items():
+            manager: ScheduleManager = data.get("schedule_manager")
+            if manager:
+                await manager.async_enable_schedule(schedule_name)
+
+    async def handle_disable_schedule(call: ServiceCall) -> None:
+        """Handle disable schedule service."""
+        schedule_name = call.data[ATTR_SCHEDULE_NAME]
+
+        for entry_id, data in hass.data[DOMAIN].items():
+            manager: ScheduleManager = data.get("schedule_manager")
+            if manager:
+                await manager.async_disable_schedule(schedule_name)
+
     hass.services.async_register(
         DOMAIN, SERVICE_SET_PROFILE, handle_set_profile, schema=SERVICE_SET_PROFILE_SCHEMA
     )
@@ -142,6 +209,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         handle_delete_profile,
         schema=SERVICE_DELETE_PROFILE_SCHEMA,
     )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_ENABLE_SCHEDULE,
+        handle_enable_schedule,
+        schema=SERVICE_ENABLE_SCHEDULE_SCHEMA,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_DISABLE_SCHEDULE,
+        handle_disable_schedule,
+        schema=SERVICE_DISABLE_SCHEDULE_SCHEMA,
+    )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -151,10 +230,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     _LOGGER.debug("Unloading Smart Heating Profiles")
-    
+
+    # Stop scheduler
+    scheduler: HeatingScheduler = hass.data[DOMAIN][entry.entry_id].get("scheduler")
+    if scheduler:
+        await scheduler.async_stop()
+
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
-    
+
     return unload_ok
 
 

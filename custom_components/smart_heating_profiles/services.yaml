@@ -105,3 +105,41 @@ delete_profile:
       required: true
       selector:
         text:
+
+enable_schedule:
+  name: Enable Schedule
+  description: Enable a heating schedule
+  fields:
+    entity_id:
+      name: Entity
+      description: The Smart Heating Profile entity
+      required: true
+      selector:
+        entity:
+          domain: climate
+          integration: smart_heating_profiles
+    schedule_name:
+      name: Schedule Name
+      description: The name of the schedule to enable
+      required: true
+      selector:
+        text:
+
+disable_schedule:
+  name: Disable Schedule
+  description: Disable a heating schedule
+  fields:
+    entity_id:
+      name: Entity
+      description: The Smart Heating Profile entity
+      required: true
+      selector:
+        entity:
+          domain: climate
+          integration: smart_heating_profiles
+    schedule_name:
+      name: Schedule Name
+      description: The name of the schedule to disable
+      required: true
+      selector:
+        text:

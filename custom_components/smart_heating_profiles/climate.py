@@ -24,6 +24,7 @@ from .const import (
     ATTR_PROFILE,
 )
 from .profile_manager import HeatingProfileManager
+from .scheduler import HeatingScheduler
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,10 +38,13 @@ async def async_setup_entry(
     profile_manager: HeatingProfileManager = hass.data[DOMAIN][entry.entry_id][
         "profile_manager"
     ]
+    scheduler: HeatingScheduler = hass.data[DOMAIN][entry.entry_id]["scheduler"]
     target_entity = entry.data[CONF_TARGET_ENTITY]
     name = entry.data[CONF_NAME]
 
-    async_add_entities([SmartHeatingProfileClimate(hass, entry, profile_manager, target_entity, name)])
+    async_add_entities(
+        [SmartHeatingProfileClimate(hass, entry, profile_manager, scheduler, target_entity, name)]
+    )
 
 
 class SmartHeatingProfileClimate(ClimateEntity):
@@ -58,6 +62,7 @@ class SmartHeatingProfileClimate(ClimateEntity):
         hass: HomeAssistant,
         entry: ConfigEntry,
         profile_manager: HeatingProfileManager,
+        scheduler: HeatingScheduler,
         target_entity: str,
         name: str,
     ) -> None:
@@ -65,6 +70,7 @@ class SmartHeatingProfileClimate(ClimateEntity):
         self.hass = hass
         self._entry = entry
         self._profile_manager = profile_manager
+        self._scheduler = scheduler
         self._target_entity = target_entity
         self._attr_unique_id = f"{entry.entry_id}_climate"
         self._attr_device_info = {
@@ -126,6 +132,9 @@ class SmartHeatingProfileClimate(ClimateEntity):
 
         self._attr_target_temperature = temperature
 
+        # Activate manual override
+        await self._scheduler.async_manual_override()
+
         # Update the target climate entity
         await self.hass.services.async_call(
             "climate",
@@ -162,10 +171,23 @@ class SmartHeatingProfileClimate(ClimateEntity):
         if await self._profile_manager.async_set_active_profile(preset_mode):
             self._attr_preset_mode = preset_mode
 
+            # Activate manual override
+            await self._scheduler.async_manual_override()
+
             # Get temperature from the profile and set it
             temperature = self._profile_manager.get_active_temperature()
             if temperature is not None:
-                await self.async_set_temperature(temperature=temperature)
+                # Set temperature without triggering another override
+                self._attr_target_temperature = temperature
+                await self.hass.services.async_call(
+                    "climate",
+                    "set_temperature",
+                    {
+                        "entity_id": self._target_entity,
+                        "temperature": temperature,
+                    },
+                    blocking=True,
+                )
 
             self.async_write_ha_state()
         else:

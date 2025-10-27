@@ -40,3 +40,52 @@ DEFAULT_PROFILES: Final = {
     PRESET_SLEEP: {"temperature": 17.0, "name": "Sleep"},
     PRESET_HOME: {"temperature": 21.0, "name": "Home"},
 }
+
+# Scheduler configuration
+CONF_SCHEDULES: Final = "schedules"
+CONF_SCHEDULER_ENABLED: Final = "scheduler_enabled"
+CONF_OVERRIDE_MODE: Final = "override_mode"
+CONF_OVERRIDE_DURATION: Final = "override_duration"
+
+# Schedule attributes
+ATTR_SCHEDULE_NAME: Final = "schedule_name"
+ATTR_SCHEDULE_ENABLED: Final = "enabled"
+ATTR_SCHEDULE_DAYS: Final = "days"
+ATTR_TIME_BLOCKS: Final = "time_blocks"
+ATTR_CONDITIONS: Final = "conditions"
+ATTR_TIME: Final = "time"
+ATTR_NEXT_BLOCK: Final = "next_block"
+ATTR_CURRENT_BLOCK: Final = "current_block"
+
+# Override modes
+OVERRIDE_MODE_TIMER: Final = "timer"
+OVERRIDE_MODE_NEXT_BLOCK: Final = "next_block"
+
+# Default scheduler settings
+DEFAULT_SCHEDULER_ENABLED: Final = True
+DEFAULT_OVERRIDE_MODE: Final = OVERRIDE_MODE_NEXT_BLOCK
+DEFAULT_OVERRIDE_DURATION: Final = 60  # minutes
+
+# Weekdays
+WEEKDAY_MON: Final = "monday"
+WEEKDAY_TUE: Final = "tuesday"
+WEEKDAY_WED: Final = "wednesday"
+WEEKDAY_THU: Final = "thursday"
+WEEKDAY_FRI: Final = "friday"
+WEEKDAY_SAT: Final = "saturday"
+WEEKDAY_SUN: Final = "sunday"
+
+ALL_WEEKDAYS: Final = [
+    WEEKDAY_MON,
+    WEEKDAY_TUE,
+    WEEKDAY_WED,
+    WEEKDAY_THU,
+    WEEKDAY_FRI,
+    WEEKDAY_SAT,
+    WEEKDAY_SUN,
+]
+
+# Scheduler services
+SERVICE_SET_SCHEDULE: Final = "set_schedule"
+SERVICE_ENABLE_SCHEDULE: Final = "enable_schedule"
+SERVICE_DISABLE_SCHEDULE: Final = "disable_schedule"
