@@ -1,0 +1,236 @@
+# Example Dashboard Configuration
+# Copy this to your Lovelace dashboard
+
+title: Smart Heating Control
+views:
+  - title: Heating
+    path: heating
+    icon: mdi:radiator
+    cards:
+      # Main heating card with beautiful timeline
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+      # Quick status overview
+      - type: horizontal-stack
+        cards:
+          - type: entity
+            entity: sensor.smart_heating_profile_schedule_status
+            name: Status
+            icon: mdi:information
+
+          - type: entity
+            entity: sensor.smart_heating_profile_next_schedule
+            name: Next Block
+            icon: mdi:clock-fast
+
+          - type: entity
+            entity: switch.smart_heating_profile_scheduler
+            name: Scheduler
+            tap_action:
+              action: toggle
+
+      # Quick climate control
+      - type: thermostat
+        entity: climate.smart_heating_profile
+
+---
+
+# Alternative: Compact View
+title: Heating (Compact)
+views:
+  - title: Home
+    cards:
+      - type: grid
+        columns: 1
+        square: false
+        cards:
+          - type: custom:smart-heating-card
+            entity: climate.smart_heating_profile
+            name: Heating Schedule
+
+          - type: glance
+            entities:
+              - sensor.smart_heating_profile_schedule_status
+              - sensor.smart_heating_profile_next_schedule
+              - switch.smart_heating_profile_scheduler
+            show_name: true
+            show_state: true
+
+---
+
+# Multi-Room Setup
+title: Multi-Room Heating
+views:
+  - title: All Rooms
+    path: heating-all
+    cards:
+      # Living Room
+      - type: custom:smart-heating-card
+        entity: climate.living_room_heating
+
+      # Bedroom
+      - type: custom:smart-heating-card
+        entity: climate.bedroom_heating
+
+      # Bathroom
+      - type: custom:smart-heating-card
+        entity: climate.bathroom_heating
+
+---
+
+# Advanced: With Conditional Cards
+title: Advanced Heating
+views:
+  - title: Control
+    cards:
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+      # Show override warning when active
+      - type: conditional
+        conditions:
+          - entity: sensor.smart_heating_profile_schedule_status
+            state: Override Active
+        card:
+          type: markdown
+          content: |
+            ## ⚠️ Override Active
+
+            Manual temperature change detected.
+            Schedule will resume based on your settings.
+
+      # Show when scheduler is disabled
+      - type: conditional
+        conditions:
+          - entity: switch.smart_heating_profile_scheduler
+            state: 'off'
+        card:
+          type: markdown
+          content: |
+            ## ℹ️ Scheduler Disabled
+
+            Turn on the scheduler to enable automatic temperature control.
+
+---
+
+# Mobile-Optimized View
+title: Heating (Mobile)
+views:
+  - title: Heating
+    path: heating
+    type: panel
+    cards:
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+---
+
+# With Manual Override Button
+title: Heating with Override
+views:
+  - title: Control
+    cards:
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+      - type: entities
+        title: Quick Actions
+        entities:
+          - entity: input_number.manual_temp
+            name: Manual Temperature
+
+        card:
+          type: button-card
+          name: Set Manual Temperature
+          tap_action:
+            action: call-service
+            service: climate.set_temperature
+            service_data:
+              entity_id: climate.smart_heating_profile
+              temperature: "{{ states('input_number.manual_temp') }}"
+
+---
+
+# Energy Saving Focus
+title: Energy Dashboard
+views:
+  - title: Heating Efficiency
+    cards:
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+      - type: statistic
+        entity: sensor.heating_energy_consumption
+        period:
+          calendar:
+            period: month
+        stat_type: total_increasing
+        name: Monthly Consumption
+
+      - type: gauge
+        entity: sensor.current_temperature
+        min: 15
+        max: 25
+        severity:
+          green: 18
+          yellow: 20
+          red: 22
+        name: Current Temperature
+
+---
+
+# With Presence Integration
+title: Smart Heating + Presence
+views:
+  - title: Home
+    cards:
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+      - type: markdown
+        content: |
+          ## Presence-Based Heating
+
+          Your schedules automatically adjust based on:
+          - 👤 Presence sensors
+          - 📍 Phone location
+          - 🚗 Car in garage
+
+      - type: entities
+        title: Presence Status
+        entities:
+          - binary_sensor.someone_home
+          - binary_sensor.bedroom_presence
+          - person.you
+
+---
+
+# Weekend vs Weekday View
+title: Schedules Overview
+views:
+  - title: Weekday
+    cards:
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+      - type: markdown
+        content: |
+          **Active Schedule:** Weekday Schedule
+
+          - 06:00 → 22°C (Wake up)
+          - 08:30 → 18°C (Work)
+          - 16:00 → 21°C (Home)
+          - 22:00 → 17°C (Sleep)
+
+  - title: Weekend
+    cards:
+      - type: custom:smart-heating-card
+        entity: climate.smart_heating_profile
+
+      - type: markdown
+        content: |
+          **Active Schedule:** Weekend Schedule
+
+          - 08:00 → 22°C (Lazy morning)
+          - 23:00 → 17°C (Sleep)

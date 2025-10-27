@@ -34,6 +34,7 @@ async def async_setup_entry(
     sensors = [
         ScheduleStatusSensor(hass, entry, schedule_manager, scheduler, name),
         NextBlockSensor(hass, entry, schedule_manager, name),
+        SchedulesDataSensor(hass, entry, schedule_manager, name),
     ]
 
     async_add_entities(sensors)
@@ -187,3 +188,51 @@ class NextBlockSensor(SensorEntity):
     def icon(self) -> str:
         """Return the icon."""
         return "mdi:clock-fast"
+
+
+class SchedulesDataSensor(SensorEntity):
+    """Sensor providing all schedules data for frontend card."""
+
+    _attr_has_entity_name = True
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        schedule_manager: ScheduleManager,
+        name: str,
+    ) -> None:
+        """Initialize the sensor."""
+        self.hass = hass
+        self._entry = entry
+        self._schedule_manager = schedule_manager
+        self._attr_unique_id = f"{entry.entry_id}_schedules_data"
+        self._attr_name = "Schedules"
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, entry.entry_id)},
+            "name": name,
+            "manufacturer": "Smart Heating Profiles",
+            "model": "Profile Controller",
+        }
+
+    @property
+    def native_value(self) -> int:
+        """Return the number of schedules."""
+        schedules = self._schedule_manager.get_schedules()
+        return len(schedules)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return all schedules as attributes."""
+        schedules = self._schedule_manager.get_schedules()
+
+        return {
+            "schedules": schedules,
+            "total_count": len(schedules),
+            "enabled_count": len([s for s in schedules if s.get("enabled", False)]),
+        }
+
+    @property
+    def icon(self) -> str:
+        """Return the icon."""
+        return "mdi:calendar-multiple"
