@@ -11,10 +11,12 @@ A Home Assistant custom integration for intelligent heating profile management.
 
 ## Features
 
-- **Smart Heating Profiles**: Create and manage multiple heating profiles for different scenarios
-- **Automated Scheduling**: Set up time-based heating schedules
-- **Energy Optimization**: Optimize heating based on occupancy and weather conditions
-- **Integration Ready**: Works seamlessly with existing Home Assistant climate entities
+- 🎯 **Smart Heating Profiles**: Create and manage multiple heating profiles for different scenarios
+- 📅 **Automated Scheduling**: Set up time-based heating schedules with multiple time blocks
+- 🔄 **Conditional Schedules**: Activate schedules based on presence sensors or other conditions
+- ⏱️ **Flexible Override Modes**: Choose between timer-based or next-block resume after manual changes
+- 📊 **Beautiful Dashboard Card**: Visual timeline interface for managing schedules
+- ⚡ **Integration Ready**: Works seamlessly with existing Home Assistant climate entities
 
 ## Installation
 
@@ -47,9 +49,27 @@ The integration can be configured through the Home Assistant UI:
 After installation and configuration, you can:
 
 - Create heating profiles for different times of day
-- Set up automatic switching between profiles
+- Set up automatic switching between profiles with conditions
 - Monitor and optimize your heating efficiency
 - Integrate with other Home Assistant automations
+
+### Dashboard Card
+
+The integration includes a beautiful custom Lovelace card for managing your heating schedules:
+
+1. **Automatic Installation**: The card is installed automatically with the integration
+2. **Register Resource** (if needed):
+   - Go to Settings → Dashboards → Resources
+   - Click "+ Add Resource"
+   - URL: `/hacsfiles/smart_heating_profiles/smart-heating-card.js`
+   - Resource type: JavaScript Module
+3. **Add to Dashboard**:
+   ```yaml
+   type: custom:smart-heating-card
+   entity: climate.your_smart_heating_profile
+   ```
+
+See `custom_components/smart_heating_profiles/www/README.md` for detailed card documentation and examples.
 
 ## Development
 
@@ -69,11 +89,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-[buymecoffee]: https://www.buymeacoffee.com/username
+[buymecoffee]: https://www.buymeacoffee.com/dddanny79
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
-[commits-shield]: https://img.shields.io/github/commit-activity/y/username/smart-heating-profiles.svg?style=for-the-badge
-[commits]: https://github.com/username/smart-heating-profiles/commits/main
-[license-shield]: https://img.shields.io/github/license/username/smart-heating-profiles.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-username-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/username/smart-heating-profiles.svg?style=for-the-badge
-[releases]: https://github.com/username/smart-heating-profiles/releases
+[commits-shield]: https://img.shields.io/github/commit-activity/y/dddanny79/smart_heating_profiles.svg?style=for-the-badge
+[commits]: https://github.com/dddanny79/smart_heating_profiles/commits/main
+[license-shield]: https://img.shields.io/github/license/dddanny79/smart_heating_profiles.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/maintainer-dddanny79-blue.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/dddanny79/smart_heating_profiles.svg?style=for-the-badge
+[releases]: https://github.com/dddanny79/smart_heating_profiles/releases
