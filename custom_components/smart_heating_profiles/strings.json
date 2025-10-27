@@ -21,9 +21,89 @@
   "options": {
     "step": {
       "init": {
-        "title": "Options",
-        "description": "Configure options for Smart Heating Profiles"
+        "title": "Smart Heating Profiles",
+        "menu_options": {
+          "schedules": "Manage Schedules",
+          "settings": "Scheduler Settings"
+        }
+      },
+      "schedule_list": {
+        "title": "Manage Schedules",
+        "description": "Create, edit, or delete heating schedules",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "schedule_create": {
+        "title": "Create Schedule",
+        "description": "Create a new heating schedule",
+        "data": {
+          "schedule_name": "Schedule Name",
+          "enabled": "Enabled",
+          "days": "Active Days"
+        }
+      },
+      "schedule_edit": {
+        "title": "Edit Schedule: {schedule_name}",
+        "description": "Configure your heating schedule\n\nTime Blocks:\n{blocks}",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "edit_days": {
+        "title": "Edit Active Days",
+        "description": "Select which days this schedule should be active",
+        "data": {
+          "days": "Active Days"
+        }
+      },
+      "time_blocks": {
+        "title": "Time Blocks",
+        "description": "Manage temperature settings for different times of day",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "add_block": {
+        "title": "Add Time Block",
+        "description": "Set a time and target temperature",
+        "data": {
+          "time": "Time (HH:MM)",
+          "temperature": "Temperature"
+        }
+      },
+      "conditions": {
+        "title": "Conditions",
+        "description": "Add conditions that must be met for this schedule to activate",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "add_condition": {
+        "title": "Add Condition",
+        "description": "Schedule will only be active when this condition is met",
+        "data": {
+          "entity_id": "Entity",
+          "state": "Required State"
+        }
+      },
+      "settings": {
+        "title": "Scheduler Settings",
+        "description": "Configure override behavior when you manually change temperature",
+        "data": {
+          "override_mode": "Override Mode",
+          "override_duration": "Override Duration (minutes)"
+        },
+        "data_description": {
+          "override_mode": "Choose how long manual changes should override the schedule",
+          "override_duration": "How many minutes before resuming schedule (only for Timer mode)"
+        }
       }
+    },
+    "error": {
+      "name_required": "Schedule name is required",
+      "schedule_exists": "A schedule with this name already exists",
+      "invalid_time": "Invalid time format. Use HH:MM (e.g., 07:30)"
     }
   },
   "services": {
@@ -96,6 +176,34 @@
         "profile_name": {
           "name": "Profile Name",
           "description": "Name of the profile to delete"
+        }
+      }
+    },
+    "enable_schedule": {
+      "name": "Enable Schedule",
+      "description": "Enable a heating schedule",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "The Smart Heating Profile entity"
+        },
+        "schedule_name": {
+          "name": "Schedule Name",
+          "description": "Name of the schedule to enable"
+        }
+      }
+    },
+    "disable_schedule": {
+      "name": "Disable Schedule",
+      "description": "Disable a heating schedule",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "The Smart Heating Profile entity"
+        },
+        "schedule_name": {
+          "name": "Schedule Name",
+          "description": "Name of the schedule to disable"
         }
       }
     }

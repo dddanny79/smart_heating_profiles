@@ -21,9 +21,89 @@
   "options": {
     "step": {
       "init": {
-        "title": "Optionen",
-        "description": "Optionen für Smart Heating Profiles konfigurieren"
+        "title": "Smart Heating Profiles",
+        "menu_options": {
+          "schedules": "Zeitpläne verwalten",
+          "settings": "Scheduler-Einstellungen"
+        }
+      },
+      "schedule_list": {
+        "title": "Zeitpläne verwalten",
+        "description": "Zeitpläne erstellen, bearbeiten oder löschen",
+        "data": {
+          "action": "Aktion"
+        }
+      },
+      "schedule_create": {
+        "title": "Zeitplan erstellen",
+        "description": "Erstelle einen neuen Heizzeitplan",
+        "data": {
+          "schedule_name": "Zeitplanname",
+          "enabled": "Aktiviert",
+          "days": "Aktive Tage"
+        }
+      },
+      "schedule_edit": {
+        "title": "Zeitplan bearbeiten: {schedule_name}",
+        "description": "Konfiguriere deinen Heizzeitplan\n\nZeitblöcke:\n{blocks}",
+        "data": {
+          "action": "Aktion"
+        }
+      },
+      "edit_days": {
+        "title": "Aktive Tage bearbeiten",
+        "description": "Wähle die Tage, an denen dieser Zeitplan aktiv sein soll",
+        "data": {
+          "days": "Aktive Tage"
+        }
+      },
+      "time_blocks": {
+        "title": "Zeitblöcke",
+        "description": "Temperatureinstellungen für verschiedene Tageszeiten verwalten",
+        "data": {
+          "action": "Aktion"
+        }
+      },
+      "add_block": {
+        "title": "Zeitblock hinzufügen",
+        "description": "Uhrzeit und Zieltemperatur festlegen",
+        "data": {
+          "time": "Uhrzeit (HH:MM)",
+          "temperature": "Temperatur"
+        }
+      },
+      "conditions": {
+        "title": "Bedingungen",
+        "description": "Bedingungen hinzufügen, die erfüllt sein müssen, damit dieser Zeitplan aktiv wird",
+        "data": {
+          "action": "Aktion"
+        }
+      },
+      "add_condition": {
+        "title": "Bedingung hinzufügen",
+        "description": "Zeitplan ist nur aktiv, wenn diese Bedingung erfüllt ist",
+        "data": {
+          "entity_id": "Entität",
+          "state": "Erforderlicher Status"
+        }
+      },
+      "settings": {
+        "title": "Scheduler-Einstellungen",
+        "description": "Override-Verhalten konfigurieren bei manuellen Temperaturänderungen",
+        "data": {
+          "override_mode": "Override-Modus",
+          "override_duration": "Override-Dauer (Minuten)"
+        },
+        "data_description": {
+          "override_mode": "Wähle, wie lange manuelle Änderungen den Zeitplan überschreiben sollen",
+          "override_duration": "Wie viele Minuten bis zur Wiederaufnahme des Zeitplans (nur für Timer-Modus)"
+        }
       }
+    },
+    "error": {
+      "name_required": "Zeitplanname ist erforderlich",
+      "schedule_exists": "Ein Zeitplan mit diesem Namen existiert bereits",
+      "invalid_time": "Ungültiges Zeitformat. Nutze HH:MM (z.B. 07:30)"
     }
   },
   "services": {
@@ -96,6 +176,34 @@
         "profile_name": {
           "name": "Profilname",
           "description": "Name des zu löschenden Profils"
+        }
+      }
+    },
+    "enable_schedule": {
+      "name": "Zeitplan aktivieren",
+      "description": "Aktiviere einen Heizzeitplan",
+      "fields": {
+        "entity_id": {
+          "name": "Entität",
+          "description": "Die Smart Heating Profile Entität"
+        },
+        "schedule_name": {
+          "name": "Zeitplanname",
+          "description": "Name des zu aktivierenden Zeitplans"
+        }
+      }
+    },
+    "disable_schedule": {
+      "name": "Zeitplan deaktivieren",
+      "description": "Deaktiviere einen Heizzeitplan",
+      "fields": {
+        "entity_id": {
+          "name": "Entität",
+          "description": "Die Smart Heating Profile Entität"
+        },
+        "schedule_name": {
+          "name": "Zeitplanname",
+          "description": "Name des zu deaktivierenden Zeitplans"
         }
       }
     }
