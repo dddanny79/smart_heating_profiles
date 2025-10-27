@@ -1,0 +1,12 @@
+{
+  "domain": "smart_heating_profiles",
+  "name": "Smart Heating Profiles",
+  "version": "1.0.0",
+  "documentation": "https://github.com/dddanny79/smart_heating_profiles",
+  "issue_tracker": "https://github.com/dddanny79/smart_heating_profiles/issues",
+  "dependencies": [],
+  "codeowners": ["@dddanny79"],
+  "requirements": [],
+  "config_flow": true,
+  "iot_class": "local_polling"
+}

@@ -1,0 +1,107 @@
+set_profile:
+  name: Set Profile
+  description: Set the active heating profile
+  fields:
+    entity_id:
+      name: Entity
+      description: The Smart Heating Profile entity
+      required: true
+      selector:
+        entity:
+          domain: climate
+          integration: smart_heating_profiles
+    profile:
+      name: Profile
+      description: The name of the profile to activate
+      required: true
+      selector:
+        text:
+
+create_profile:
+  name: Create Profile
+  description: Create a new heating profile
+  fields:
+    entity_id:
+      name: Entity
+      description: The Smart Heating Profile entity
+      required: true
+      selector:
+        entity:
+          domain: climate
+          integration: smart_heating_profiles
+    profile_name:
+      name: Profile Name
+      description: The name for the new profile
+      required: true
+      selector:
+        text:
+    temperature:
+      name: Temperature
+      description: The target temperature for this profile
+      required: true
+      selector:
+        number:
+          min: 5
+          max: 30
+          step: 0.5
+          unit_of_measurement: "°C"
+    profile_data:
+      name: Profile Data
+      description: Additional profile data (optional)
+      required: false
+      selector:
+        object:
+
+update_profile:
+  name: Update Profile
+  description: Update an existing heating profile
+  fields:
+    entity_id:
+      name: Entity
+      description: The Smart Heating Profile entity
+      required: true
+      selector:
+        entity:
+          domain: climate
+          integration: smart_heating_profiles
+    profile_name:
+      name: Profile Name
+      description: The name of the profile to update
+      required: true
+      selector:
+        text:
+    temperature:
+      name: Temperature
+      description: The new target temperature for this profile
+      required: false
+      selector:
+        number:
+          min: 5
+          max: 30
+          step: 0.5
+          unit_of_measurement: "°C"
+    profile_data:
+      name: Profile Data
+      description: Additional profile data to update
+      required: false
+      selector:
+        object:
+
+delete_profile:
+  name: Delete Profile
+  description: Delete a heating profile
+  fields:
+    entity_id:
+      name: Entity
+      description: The Smart Heating Profile entity
+      required: true
+      selector:
+        entity:
+          domain: climate
+          integration: smart_heating_profiles
+    profile_name:
+      name: Profile Name
+      description: The name of the profile to delete
+      required: true
+      selector:
+        text:

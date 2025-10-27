@@ -1,0 +1,103 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Heating Profiles Setup",
+        "description": "Configure your Smart Heating Profile controller",
+        "data": {
+          "name": "Name",
+          "target_entity": "Target Climate Entity"
+        }
+      }
+    },
+    "error": {
+      "invalid_entity": "The selected entity is invalid or not a climate entity",
+      "unknown": "An unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "This climate entity is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "description": "Configure options for Smart Heating Profiles"
+      }
+    }
+  },
+  "services": {
+    "set_profile": {
+      "name": "Set Profile",
+      "description": "Activate a heating profile",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "The Smart Heating Profile entity"
+        },
+        "profile": {
+          "name": "Profile",
+          "description": "Name of the profile to activate"
+        }
+      }
+    },
+    "create_profile": {
+      "name": "Create Profile",
+      "description": "Create a new heating profile",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "The Smart Heating Profile entity"
+        },
+        "profile_name": {
+          "name": "Profile Name",
+          "description": "Name for the new profile"
+        },
+        "temperature": {
+          "name": "Temperature",
+          "description": "Target temperature for the profile"
+        },
+        "profile_data": {
+          "name": "Profile Data",
+          "description": "Additional profile configuration data"
+        }
+      }
+    },
+    "update_profile": {
+      "name": "Update Profile",
+      "description": "Update an existing heating profile",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "The Smart Heating Profile entity"
+        },
+        "profile_name": {
+          "name": "Profile Name",
+          "description": "Name of the profile to update"
+        },
+        "temperature": {
+          "name": "Temperature",
+          "description": "New target temperature"
+        },
+        "profile_data": {
+          "name": "Profile Data",
+          "description": "Updated profile configuration data"
+        }
+      }
+    },
+    "delete_profile": {
+      "name": "Delete Profile",
+      "description": "Delete a heating profile",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "The Smart Heating Profile entity"
+        },
+        "profile_name": {
+          "name": "Profile Name",
+          "description": "Name of the profile to delete"
+        }
+      }
+    }
+  }
+}
